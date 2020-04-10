@@ -1,9 +1,10 @@
 """使用python自带的单元测试库unittest进行测试"""
 import datetime
 
-from calibrate import calibrate
 from data_process import init_parameters
+from calibrate import calibrate
 from xaj import xaj
+import pickle
 
 import unittest
 
@@ -17,6 +18,8 @@ class TestXaj(unittest.TestCase):
         property, config, initial_conditions, days_rain_evapor, floods_data, xaj_params = init_parameters()
         # 调用模型计算，得到输出
         simulated_flow = xaj(property, config, initial_conditions, days_rain_evapor, floods_data, xaj_params)
+        with open('simulated_flow.pickle', 'wb') as f:
+            pickle.dump(simulated_flow, f)
         print(simulated_flow)
 
     def test_xaj_calibrate(self):
@@ -25,6 +28,8 @@ class TestXaj(unittest.TestCase):
         optimal_params = calibrate(run_counts)
         print("本次优化的计算结果，即优选参数集为：")
         print(optimal_params)
+        with open('optimal_params', 'wb') as f:
+            pickle.dump(optimal_params, f)
         endtime = datetime.datetime.now()
         print("率定完毕，耗费时间为 " + str((endtime - starttime).seconds) + " s")
 
@@ -32,7 +37,8 @@ class TestXaj(unittest.TestCase):
 if __name__ == '__main__':
     # 测试流程：写好TestCase（类TestXaj），加载TestCase到TestSuite，由TextTestRunner运行TestSuite，运行结果保存在TextTestResult中
     suite = unittest.TestSuite()
-    tests = [TestXaj('test_xaj_calibrate')]
+    tests = [TestXaj('test_xaj')]
+    # tests = [TestXaj('test_xaj_calibrate')]
     suite.addTests(tests)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)

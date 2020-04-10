@@ -1,0 +1,90 @@
+2019-08-19 19:43:51,860 - INFO - class Figure_Canvas
+2019-08-19 19:43:51,861 - INFO - Progrem start...
+2019-08-19 19:43:52,139 - INFO - PRAGMA table_info("select * from Station")
+2019-08-19 19:43:52,140 - INFO - ()
+2019-08-19 19:43:52,144 - INFO - select * from Station
+2019-08-19 19:43:52,145 - INFO - ()
+2019-08-19 19:43:52,169 - INFO - PRAGMA table_info("select * from Paramete")
+2019-08-19 19:43:52,170 - INFO - ()
+2019-08-19 19:43:52,172 - INFO - select * from Paramete
+2019-08-19 19:43:52,174 - INFO - ()
+2019-08-19 19:43:52,182 - INFO - PRAGMA table_info("select * from Api")
+2019-08-19 19:43:52,185 - INFO - ()
+2019-08-19 19:43:52,188 - INFO - select * from Api
+2019-08-19 19:43:52,191 - INFO - ()
+2019-08-19 19:43:52,485 - INFO - PRAGMA table_info("select * from Station")
+2019-08-19 19:43:52,486 - INFO - ()
+2019-08-19 19:43:52,489 - INFO - select * from Station
+2019-08-19 19:43:52,490 - INFO - ()
+2019-08-19 19:43:52,499 - INFO - PRAGMA table_info("select * from Paramete")
+2019-08-19 19:43:52,500 - INFO - ()
+2019-08-19 19:43:52,503 - INFO - select * from Paramete
+2019-08-19 19:43:52,504 - INFO - ()
+2019-08-19 19:43:52,511 - INFO - PRAGMA table_info("select * from Em_K")
+2019-08-19 19:43:52,512 - INFO - ()
+2019-08-19 19:43:52,514 - INFO - select * from Em_K
+2019-08-19 19:43:52,515 - INFO - ()
+2019-08-19 19:43:56,097 - INFO - PRAGMA table_info("SELECT TM, DRP FROM precipitation WHERE TM BETWEEN     '2019-02-19 00:00' AND '2019-02-24 00:00'")
+2019-08-19 19:43:56,098 - INFO - ()
+2019-08-19 19:43:56,101 - INFO - SELECT TM, DRP FROM precipitation WHERE TM BETWEEN     '2019-02-19 00:00' AND '2019-02-24 00:00'
+2019-08-19 19:43:56,101 - INFO - ()
+2019-08-19 19:43:56,103 - INFO - ROLLBACK
+2019-08-19 19:43:56,108 - CRITICAL - End Run
+Traceback (most recent call last):
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1193, in _execute_context
+    context)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 509, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: precipitation
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/yasin/Desktop/Vcode_project/Works-related/API/api_go.py", line 958, in <module>
+    mywindow = MyWindow()
+  File "/home/yasin/Desktop/Vcode_project/Works-related/API/api_go.py", line 250, in __init__
+    self.update_scene()  # * self.Span在里面定义
+  File "/home/yasin/Desktop/Vcode_project/Works-related/API/api_go.py", line 299, in update_scene
+    self.precipitation = get_data('P', tm_start, tm_end)
+  File "/home/yasin/Desktop/Vcode_project/Works-related/API/con_sqlite.py", line 96, in get_data
+    data = pd.read_sql(query_sql, engine, parse_dates=['TM'])
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/pandas/io/sql.py", line 397, in read_sql
+    chunksize=chunksize)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/pandas/io/sql.py", line 1063, in read_query
+    result = self.execute(*args)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/pandas/io/sql.py", line 954, in execute
+    return self.connectable.execute(*args, **kwargs)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 2075, in execute
+    return connection.execute(statement, *multiparams, **params)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 942, in execute
+    return self._execute_text(object, multiparams, params)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1104, in _execute_text
+    statement, parameters
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1200, in _execute_context
+    context)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1413, in _handle_dbapi_exception
+    exc_info
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 265, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb, cause=cause)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 248, in reraise
+    raise value.with_traceback(tb)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1193, in _execute_context
+    context)
+  File "/home/yasin/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 509, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: precipitation [SQL: "SELECT TM, DRP FROM precipitation WHERE TM BETWEEN     '2019-02-19 00:00' AND '2019-02-24 00:00'"] (Background on this error at: http://sqlalche.me/e/e3q8)
+Stack (most recent call last):
+  File "/home/yasin/.vscode/extensions/ms-python.python-2019.8.30787/pythonFiles/ptvsd_launcher.py", line 43, in <module>
+    main(ptvsdArgs)
+  File "/home/yasin/.vscode/extensions/ms-python.python-2019.8.30787/pythonFiles/lib/python/ptvsd/__main__.py", line 432, in main
+    run()
+  File "/home/yasin/.vscode/extensions/ms-python.python-2019.8.30787/pythonFiles/lib/python/ptvsd/__main__.py", line 316, in run_file
+    runpy.run_path(target, run_name='__main__')
+  File "/home/yasin/anaconda3/lib/python3.7/runpy.py", line 263, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "/home/yasin/anaconda3/lib/python3.7/runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "/home/yasin/anaconda3/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/yasin/Desktop/Vcode_project/Works-related/API/api_go.py", line 963, in <module>
+    logging.critical('End Run', exc_info=True, stack_info=True)

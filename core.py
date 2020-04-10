@@ -74,6 +74,7 @@ def evapor_single_period(evapor_params, initial_conditions, precip, evapor):
         el = 0
         ed = 0
         if wu0 + p - e - r < wum:
+            # 上层张力水蓄水容量wum
             wu = wu0 + p - e - r
             wl = wl0
             wd = wd0
@@ -495,6 +496,8 @@ def route_linear_reservoir(route_params, basin_property, config, rss, rg):
 
 def uh_recognise(runoffs, flood_data):
     """时段单位线的识别，先以最小二乘法为主。
+    floods = runoffs * uh  ->> q = np.dot(h, uh)
+    将卷积过程转为稀疏的权重矩阵h与向量的乘积,再线性求解得单位线uh
     Parameters
     ------------
     runoffs:各场次洪水对应的各时段净雨，np.array组成的list
@@ -521,14 +524,14 @@ def uh_recognise(runoffs, flood_data):
             for k in range(j, j + m):
                 h_row[k] = runoffs[i][k - j]
             ht.append(h_row)
-        h = np.transpose(ht)
-        ht_h = np.dot(ht, h)
+        h = np.transpose(ht)  # 稀疏矩阵
+        ht_h = np.dot(ht, h)  # 转为方阵
         ht_q = np.dot(ht, q)
-        # 求得一条单位线
+        # 线性求解得一条单位线
         uh_temp = np.linalg.solve(ht_h, ht_q)
         # 每场次洪水均有一条单位线
         uh_s.append(uh_temp)
-        # 求和，因为单位线长度可能不一致，所以需要进行补0对齐
+        # 求和，因为单位线长度可能不一致，所以需要进行补3对齐
         if i == 0:
             uh_sum = uh_temp
         else:

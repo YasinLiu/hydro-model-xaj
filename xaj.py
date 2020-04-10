@@ -1,4 +1,5 @@
 """新安江模型程序入口"""
+import pickle
 import numpy as np
 from core import initial_soil_moisture, runoff_generation, different_sources, uh_forecast, route_linear_reservoir, \
     network_route, river_route, uh_recognise, split_flow, divide_source
@@ -52,8 +53,8 @@ def xaj_routing(basin_property, config, xaj_params, uh, rs, rss, rg):
         汇流计算结果
     """
     # TODO: 因为目前只是一个单元的运算的代码，所以不涉及河网汇流，但是为了显示完整步骤，这里先给出了马斯京根计算，这部分还需完善
-    qs = uh_forecast(rs, uh)
-    qi, qg = route_linear_reservoir(xaj_params, basin_property, config, rss, rg)
+    qs = uh_forecast(rs, uh)  # 单位线汇流计算
+    qi, qg = route_linear_reservoir(xaj_params, basin_property, config, rss, rg)  # 瞬时单位线汇流计算
     q = qs + qi + qg
     # 单元面积河网汇流计算
     q = network_route(q, xaj_params)
@@ -84,7 +85,8 @@ def xaj(basin_property, config, initial_conditions, days_rain_evapor, floods_dat
     ri_s = []
     rg_s = []
     for i in range(len(floods_data)):
-        rs, ri, rg = xaj_runoff_generation(config, initial_conditions, days_rain_evapor[i], floods_data[i], xaj_params)
+        rs, ri, rg = xaj_runoff_generation(config, initial_conditions, days_rain_evapor[0], floods_data[0], xaj_params)
+
         rs_s.append(rs)
         ri_s.append(ri)
         rg_s.append(rg)

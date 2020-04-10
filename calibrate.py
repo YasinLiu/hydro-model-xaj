@@ -7,7 +7,7 @@ from xaj import xaj
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+count = 0
 class XajCalibrate(Problem):
     def __init__(self):
         # 定义决策变量个数（这里就是参与寻优的xaj模型参数的个数），目标个数（要计算的适应度，暂时设为2个）
@@ -26,7 +26,7 @@ class XajCalibrate(Problem):
         self.directions[:] = [Problem.MINIMIZE, Problem.MAXIMIZE]
 
     def evaluate(self, solution):
-        params = solution.variables[:]
+        params = solution.variables[:]  # Randomly assign parameters
         solution.objectives[:] = cal_fitness(params)
 
 
@@ -82,7 +82,9 @@ def cal_mare(simulated_flow, flood_data):
 
 def cal_fitness(xaj_params):
     """统计预报误差等，计算模型fitness，也便于后面进行参数率定"""
-    print("----------------------------------------一次径流模拟开始-------------------------------------------------")
+    global count
+    count += 1
+    print("----------------------------------------一次径流模拟开始{}-------------------------------------------------".format(count))
     # 构造输入数据
     basin_property, config, initial_conditions, day_rain_evapor, flood_data, xaj_params = init_parameters(xaj_params)
     # 调用模型计算，得到输出
@@ -116,6 +118,7 @@ def calibrate(run_counts):
     """
     algorithm = NSGAII(XajCalibrate(), population_size=500, variator=GAOperator(SBX(0.95, 20.0), PM(2, 25.0)))
     algorithm.run(run_counts)
+    # algorithm.run(run_counts)
 
     # We could also get only the non-dominated solutions，这里只展示非劣解集
     nondominated_solutions = nondominated(algorithm.result)

@@ -3,6 +3,7 @@ import pandas as pd
 import netCDF4
 import numpy as np
 import os
+import pickle
 
 
 def init_parameters(params=None):
@@ -21,9 +22,11 @@ def init_parameters(params=None):
     xaj_params:Series 新安江模型参数
     """
     # 流域属性值的读取，包括流域面积
-    basin_property = pd.Series({'basin_area/km^2': 343})
+    basin_property = pd.Series({'basin_area/km^2': 1695}) # !karot
+    # basin_property = pd.Series({'basin_area/km^2': 343})
     # 模型计算的简单配置，包括场次洪水洪号，计算的时间步长等
-    config = pd.Series({'flood_ids': [19980531], 'time_interval/h': 1})
+    config = pd.Series({'flood_ids': [20180807], 'time_interval/h': 1})
+    # config = pd.Series({'flood_ids': [19980531], 'time_interval/h': 1})
     # 初始化一部分模型所需的参数初值，包括流域上层、下层、深层张力水蓄量初值（三层蒸发模型计算使用的参数），
     #                               分水源计算的产流面积初值、自由水蓄量初值
     initial_conditions = pd.Series([0, 1, 20, 0.001, 0.00], index=['WU', 'WL', 'WD', 'FR0', 'S0'])  # 如何取值？
@@ -46,12 +49,26 @@ def init_parameters(params=None):
     # L: 河网汇流迟滞时间
     # XE: 单元河段马斯京根模型参数X值
     # KE: 单元河段马斯京根模型参数K值
+    # params is not None when testing
     if params is None:
         xaj_params = pd.Series(
-            [.998, 27.764, 84.393, .200, 182.515, .400, .040, 51.634, 1.002, .379, .986, .284, .766, 1.791, .029,
+            [1.261, 27.764, 84.393, .200, 182.515, .400, .040, 51.634, 1.002, .379, .986, .284, .766, 1.791, .029,
              1.001],
             index=['K', 'WUM', 'WLM', 'C', 'WM', 'B', 'IMP', 'SM', 'EX', 'KSS', 'KKSS', 'KKG', 'CR', 'L', 'XE',
                    'KE'])
+        with open('optimal_params', 'rb') as f:
+            optimal_params = pickle.load(f)
+        xaj_params[:15] = optimal_params[0]
+        
+        xaj_params = xaj_params.round(3)
+        # xaj_params = pd.Series(
+        #     [.998, 27.764, 84.393, .200, 182.515, .400, .040, 51.634, 1.002, .379, .986, .284, .766, 1.791, .029,
+        #      1.001],
+        #     index=['K', 'WUM', 'WLM', 'C', 'WM', 'B', 'IMP', 'SM', 'EX', 'KSS', 'KKSS', 'KKG', 'CR', 'L', 'XE',
+        #            'KE'])
+
+        with open('xaj_params.pickle', 'wb') as f:
+            pickle.dump(xaj_params, f)
     else:
         params.append(config['time_interval/h'])
         xaj_params = pd.Series(params,
@@ -59,8 +76,10 @@ def init_parameters(params=None):
                                       'CR', 'L', 'XE', 'KE'])
 
     # 然后读取场次洪水数据和每场次洪水数据前若干日的日降雨和蒸发数据（计算前期影响雨量作为初始土壤含水量依据）,降雨和蒸发数据均为观测数据
-    day_rain_evapor = pd.read_csv('data/example_day_rain_evapor.txt', sep='\t')
-    flood_data = pd.read_csv("data/example_flood.txt", sep='\t')
+    day_rain_evapor = pd.read_csv('pre_rain.txt', sep='\t')
+    flood_data = pd.read_csv("flood.txt", sep='\t')
+    # day_rain_evapor = pd.read_csv('data/example_day_rain_evapor.txt', sep='\t')
+    # flood_data = pd.read_csv("data/example_flood.txt", sep='\t')
     # 把数据整理为各场次洪水
     days_rain_evapor = []
     floods_data = []
